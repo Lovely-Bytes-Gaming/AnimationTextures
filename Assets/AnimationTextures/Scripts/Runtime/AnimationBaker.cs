@@ -98,6 +98,9 @@ namespace LovelyBytes.AnimationTextures
             GetGraphForAnimationClip(_animator, _animationClip, out PlayableGraph graph);
             graph.Evaluate(0f);
             
+            var smr = _renderer as SkinnedMeshRenderer;
+            smr?.BakeMesh(mesh);
+            
             var texture = new Texture2D(width, height, TextureFormat.ARGB32, mipChain: false, linear: true);
             
             float delta = 1f / _animationClip.frameRate;
@@ -114,9 +117,7 @@ namespace LovelyBytes.AnimationTextures
                 }
 
                 graph.Evaluate(delta);
-                
-                if (_renderer is SkinnedMeshRenderer smr)
-                    smr.BakeMesh(mesh);
+                smr?.BakeMesh(mesh);
             }
             texture.SetPixels(colors);
 
