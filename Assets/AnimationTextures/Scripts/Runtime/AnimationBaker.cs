@@ -1,13 +1,17 @@
 ﻿using System;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace LovelyBytes.AnimationTextures
 {
     public class AnimationBaker : MonoBehaviour
     {
+#if UNITY_EDITOR
         [SerializeField]
         private Renderer _renderer;
         
@@ -176,5 +180,6 @@ namespace LovelyBytes.AnimationTextures
             int idx = path.IndexOf("Assets", StringComparison.Ordinal);
             return path[idx..];
         }
+#endif
     }
 }

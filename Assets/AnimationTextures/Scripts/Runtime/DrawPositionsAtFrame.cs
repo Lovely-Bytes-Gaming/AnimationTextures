@@ -1,7 +1,6 @@
-﻿using LovelyBytes.AnimationTextures;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace DefaultNamespace
+namespace LovelyBytes.AnimationTextures
 {
     public class DrawPositionsAtFrame : MonoBehaviour
     {
@@ -9,27 +8,27 @@ namespace DefaultNamespace
         private Texture2D _texture;
 
         [SerializeField] 
-        private float _frame;
+        private int _frame;
 
         [SerializeField] 
         private BoundingBox _boundingBox;
 
         [SerializeField]
         private Mesh _mesh;
-        
         private Mesh _meshCopy;
+
+        private Mesh _currentMesh;
         
         private void SetVertices()
         {
-            _meshCopy = Instantiate(_mesh);
             var verts = new Vector3[_texture.width];
 
             for (int i = 0; i < _texture.width; ++i)
             {
-                float x = _meshCopy.uv2[i].x - 0.5f / _meshCopy.vertexCount;
-                float y = _frame;
+                int x = Mathf.RoundToInt(_meshCopy.uv2[i].x * _meshCopy.vertexCount - 0.5f);
+                int y = _frame;
                 
-                Color c = _texture.GetPixelBilinear(x, y);
+                Color c = _texture.GetPixel(x, y);
                 Vector3 v = new(c.r, c.g, c.b);
                 v = _boundingBox.ToAbsolutePosition(v);
                 verts[i] = v;
@@ -40,21 +39,26 @@ namespace DefaultNamespace
 
         private void OnValidate()
         {
-            if (_texture && _mesh && _boundingBox)
+            if (!_texture || !_mesh || !_boundingBox) 
+                return;
+            
+            if (_currentMesh != _mesh)
             {
-                SetVertices();
-            }    
-        }
-
-        private void Update()
-        {
-            _frame += Time.deltaTime;
-            OnValidate();
+                _currentMesh = _mesh;
+                    
+                if (_meshCopy)
+                    DestroyImmediate(_meshCopy);
+                    
+                _meshCopy = Instantiate(_mesh);
+            }
+                
+            SetVertices();
         }
 
         private void OnDrawGizmos()
         {
-            Gizmos.DrawMesh(_meshCopy, transform.position);
+            if (_meshCopy)
+                Gizmos.DrawMesh(_meshCopy, transform.position);
         }
     }
 }
