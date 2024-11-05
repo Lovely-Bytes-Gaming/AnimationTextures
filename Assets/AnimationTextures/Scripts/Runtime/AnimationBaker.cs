@@ -119,8 +119,9 @@ namespace LovelyBytes.AnimationTextures
                 graph.Evaluate(delta);
                 smr?.BakeMesh(mesh);
             }
+            graph.Destroy();
+            
             texture.SetPixels(colors);
-
             
             for (int i = 0; i < width; i++)
                 vertexIds[i] = new Vector2((i + 0.5f) / width, 1f);
