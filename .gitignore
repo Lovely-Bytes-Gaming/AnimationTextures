@@ -48,8 +48,12 @@ ExportedObj/
 *.opendb
 *.VC.db
 
-#Rider
+# Rider
 .idea
+
+# Test Folder
+/[Aa]ssets/GitIgnore
+/[Aa]ssets/GitIgnore.meta
 
 # Unity3D generated meta files
 *.pidb.meta
