@@ -1,0 +1,14 @@
+{
+  "name": "com.lovelybytes.animation-textures",
+  "author": "Lovely Bytes Gaming",
+  "version": "0.1.0",
+  "displayName": "Animation Textures",
+  "description": "Framework for baking animation clips into textures for shader playback",
+  "unity": "6000.0",
+  "keywords": [
+    "animation-textures"
+  ],
+  "license": "MIT",
+  "dependencies": {
+  }
+}
