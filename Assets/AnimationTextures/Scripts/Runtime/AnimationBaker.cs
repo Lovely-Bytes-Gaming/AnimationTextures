@@ -29,6 +29,9 @@ namespace LovelyBytes.AnimationTextures
         
         [SerializeField]
         private AnimationClip _animationClip;
+
+        [SerializeField, Range(0, 3), Tooltip("The UV channel in which to write the vertex IDs for the output mesh")] 
+        private int _uvChannel;
         
         [ContextMenu(nameof(CreateBoundingBox))]
         public void CreateBoundingBox()
@@ -86,11 +89,8 @@ namespace LovelyBytes.AnimationTextures
 
             Mesh mesh = Instantiate(_mesh);
             
-            int frames = Mathf.CeilToInt(_animationClip.length * _animationClip.frameRate);
             int width = mesh.vertexCount;
-            int height = frames;
-            
-            Debug.Log($"width: {width}, height: {height}");
+            int height = Mathf.CeilToInt(_animationClip.length * _animationClip.frameRate);
             
             var colors = new Color[width * height];
             var vertexIds = new Vector2[width];
@@ -121,24 +121,11 @@ namespace LovelyBytes.AnimationTextures
             }
             texture.SetPixels(colors);
 
+            
             for (int i = 0; i < width; i++)
-            {
                 vertexIds[i] = new Vector2((i + 0.5f) / width, 1f);
-            }
             
-            mesh.SetUVs(1, vertexIds);
-            
-            //for (int i = 0; i < 8; ++i)
-            //{
-            //    VertexAttribute attr = VertexAttribute.TexCoord0 + i;
-            //    
-            //    if (mesh.HasVertexAttribute(attr))
-            //        continue;
-            //    
-            //    mesh.SetUVs(attr - VertexAttribute.TexCoord0, vertexIds);
-            //    Debug.Log($"Vertex IDs written to {attr}");
-            //    break;
-            //}
+            mesh.SetUVs(_uvChannel, vertexIds);
             
             string texturePath = EditorUtility.SaveFilePanel("Save Animation Texture", 
                 Application.dataPath, $"{_animationClip.name}-Texture", "asset");

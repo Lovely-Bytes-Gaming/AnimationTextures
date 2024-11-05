@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace LovelyBytes.AnimationTextures
 {
@@ -11,15 +10,24 @@ namespace LovelyBytes.AnimationTextures
         private readonly int _minBoundsID = Shader.PropertyToID("_MinBounds");
         private readonly int _maxBoundsID = Shader.PropertyToID("_MaxBounds");
 
-        private void OnValidate()
+        [ContextMenu(nameof(Apply))]
+        public void Apply()
         {
+            if (!_renderer.sharedMaterial || !_boundingBox)
+                return;
+            
             _renderer.sharedMaterial.SetVector(_minBoundsID, _boundingBox.Min);
             _renderer.sharedMaterial.SetVector(_maxBoundsID, _boundingBox.Max);
+        }
+        
+        private void OnValidate()
+        {
+            Apply();
         }
 
         private void Awake()
         {
-            OnValidate();
+            Apply();
         }
     }
 }
