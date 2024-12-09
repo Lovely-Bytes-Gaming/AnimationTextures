@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
+using UnityEngine.Rendering;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -94,6 +95,7 @@ namespace LovelyBytes.AnimationTextures
             
             var colors = new Color[width * height];
             var vertexIds = new Vector2[width];
+            var normals = new Vector3[width];
             
             GetGraphForAnimationClip(_animator, _animationClip, out PlayableGraph graph);
             graph.Evaluate(0f);
@@ -119,15 +121,20 @@ namespace LovelyBytes.AnimationTextures
                 graph.Evaluate(delta);
                 smr?.BakeMesh(mesh);
             }
+            
             graph.Destroy();
             
             texture.SetPixels(colors);
-            
+
             for (int i = 0; i < width; i++)
+            {
                 vertexIds[i] = new Vector2((i + 0.5f) / width, 1f);
+                normals[i] = _transform.TransformDirection(mesh.normals[i]);
+            }
             
             mesh.SetUVs(_uvChannel, vertexIds);
-            
+            mesh.SetNormals(normals);
+
             string texturePath = EditorUtility.SaveFilePanel("Save Animation Texture", 
                 Application.dataPath, $"{_animationClip.name}-Texture", "asset");
             
