@@ -13,7 +13,7 @@ namespace LovelyBytes.AnimationTextures
         [ContextMenu(nameof(Apply))]
         public void Apply()
         {
-            if (!_renderer.sharedMaterial || !_boundingBox)
+            if (!_renderer || !_renderer.sharedMaterial || !_boundingBox)
                 return;
             
             _renderer.sharedMaterial.SetVector(_minBoundsID, _boundingBox.Min);
