@@ -113,9 +113,9 @@ namespace LovelyBytes.AnimationTextures
             var texture = new Texture2D(vertexCount, totalFrameCount, TextureFormat.ARGB32, mipChain: false, linear: true);
 
             int insertIdx = 0;
-            for (int clipIndex = 0; clipIndex < _animationClips.Length; clipIndex++)
+            for (int clipIdx = 0; clipIdx < _animationClips.Length; clipIdx++)
             {
-                AnimationClip animationClip = _animationClips[clipIndex];
+                AnimationClip animationClip = _animationClips[clipIdx];
                 int frameCount = Mathf.CeilToInt(animationClip.length * animationClip.frameRate);
 
                 GetGraphForAnimationClip(_animator, animationClip, out PlayableGraph graph);
@@ -126,11 +126,11 @@ namespace LovelyBytes.AnimationTextures
 
                 float delta = 1f / animationClip.frameRate;
 
-                for (int i = 0; i < frameCount; i++)
+                for (int frameIdx = 0; frameIdx < frameCount; frameIdx++)
                 {
-                    for (int j = 0; j < vertexCount; j++)
+                    for (int vertexIdx = 0; vertexIdx < vertexCount; vertexIdx++)
                     {
-                        Vector3 v = _transform.TransformPoint(mesh.vertices[j]);
+                        Vector3 v = _transform.TransformPoint(mesh.vertices[vertexIdx]);
                         v = _boundingBox.ToRelativePosition(v);
 
                         Color c = new(v.x, v.y, v.z);
@@ -142,7 +142,9 @@ namespace LovelyBytes.AnimationTextures
                 }
                 graph.Destroy();
 
-                if (clipIndex < _animationClips.Length - 1)
+                // if this is not the last clip, we add the last frame of the current animation again,
+                // to avoid interpolation errors at the borders between clips
+                if (clipIdx < _animationClips.Length - 1)
                 {
                     for (int i = 0; i < vertexCount; ++i)
                     {

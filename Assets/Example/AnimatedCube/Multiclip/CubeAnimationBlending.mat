@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MulticlipCube
-  m_Shader: {fileID: -6465566751694194690, guid: 05026f86d0c394b45a4595d79adc7d32, type: 3}
+  m_Name: CubeAnimationBlending
+  m_Shader: {fileID: -6465566751694194690, guid: a739792f090059049bdbf82b1239a5a9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -107,6 +107,8 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _Clip1Start: 0.5
+    - _ClipIndex: 1
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -114,7 +116,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _Frame: 0.55
+    - _Frame: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -136,8 +138,8 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _MaxBounds: {r: 0.5981515, g: 1.6743894, b: 0.5, a: 0}
-    - _MinBounds: {r: -0.5981515, g: 0.02184844, b: -0.5, a: 0}
+    - _MaxBounds: {r: 0.655682, g: 1.6743894, b: 1.890764, a: 0}
+    - _MinBounds: {r: -0.655682, g: -0.20082575, b: -1.3046143, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
