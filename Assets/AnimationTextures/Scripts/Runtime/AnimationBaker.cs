@@ -119,7 +119,15 @@ namespace LovelyBytes.AnimationTextures
             var colors = new Color[vertexCount * totalFrameCount];
             var vertexIds = new Vector2[vertexCount];
             var normals = new Vector3[vertexCount];
-            var texture = new Texture2D(vertexCount, totalFrameCount, TextureFormat.ARGB32, mipChain: false, linear: true);
+            
+            var texture = new Texture2D(vertexCount, totalFrameCount, TextureFormat.ARGB32, mipChain: false, linear: true)
+            {
+                // if we bake only a single clip that is looping, we can get the looping behaviour via sampling the texture
+                // in repeat mode. Otherwise, we set the wrap mode to clamp, so that the last frame of the last clip doesn't
+                // accidentally impact the first frame of the first clip.
+                wrapMode = _animationClips.Length == 1 && _animationClips[0].wrapMode == WrapMode.Loop 
+                    ? TextureWrapMode.Repeat : TextureWrapMode.Clamp
+            };
 
             int insertIdx = 0;
             for (int clipIdx = 0; clipIdx < _animationClips.Length; clipIdx++)
