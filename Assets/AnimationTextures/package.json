@@ -9,6 +9,5 @@
     "animation-textures"
   ],
   "license": "MIT",
-  "dependencies": {
-  }
+  "dependencies": {}
 }

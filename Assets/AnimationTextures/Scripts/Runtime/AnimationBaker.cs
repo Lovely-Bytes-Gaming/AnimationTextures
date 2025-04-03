@@ -12,6 +12,7 @@ using UnityEngine.Animations;
 using UnityEngine.Playables;
 
 #if UNITY_EDITOR
+using System.IO;
 using UnityEditor;
 #endif
 
@@ -47,6 +48,8 @@ namespace LovelyBytes.AnimationTextures
         [SerializeField, Tooltip("Optional. Will be used to transform the mesh during baking")] 
         private Transform _transform;
 
+        private string _lastOpenedPath = Application.dataPath;
+        
         [ContextMenu(nameof(Bake))]
         public void Bake()
         {
@@ -88,8 +91,8 @@ namespace LovelyBytes.AnimationTextures
             _boundingBox.Min = min;
             _boundingBox.Max = max;
 
-            string path = EditorUtility.SaveFilePanel("Save Bounding Box Asset", 
-                Application.dataPath, $"{_mesh.name}-BoundingBox","asset");
+            string path = OpenSaveFilePanel("Save Bounding Box Asset", 
+                $"{_mesh.name}-BoundingBox","asset");
 
             if (string.IsNullOrEmpty(path))
                 return;
@@ -126,7 +129,7 @@ namespace LovelyBytes.AnimationTextures
             {
                 // if we bake only a single clip that is looping, we can get the looping behaviour via sampling the texture
                 // in repeat mode. Otherwise, we set the wrap mode to clamp, so that the last frame of the last clip doesn't
-                // accidentally impact the first frame of the first clip.
+                // impact the first frame of the first clip.
                 wrapMode = _animationClips.Length == 1 && _animationClips[0].wrapMode == WrapMode.Loop 
                     ? TextureWrapMode.Repeat : TextureWrapMode.Clamp
             };
@@ -184,12 +187,12 @@ namespace LovelyBytes.AnimationTextures
             mesh.SetUVs(_uvChannel, vertexIds);
             mesh.SetNormals(normals);
 
-            string texturePath = EditorUtility.SaveFilePanel("Save Animation Texture", 
-                Application.dataPath, $"{_mesh.name}-AnimationTexture", "asset");
+            string texturePath = OpenSaveFilePanel("Save Animation Texture",
+                $"{_mesh.name}-AnimationTexture", "asset");
             
             AssetDatabase.CreateAsset(texture, GetRelativePath(texturePath));
             
-            string meshPath = EditorUtility.SaveFilePanel("Save Mesh", Application.dataPath,
+            string meshPath = OpenSaveFilePanel("Save Mesh",
                 $"{_mesh.name}-VertexIDs", "asset");
         }
         
@@ -238,6 +241,20 @@ namespace LovelyBytes.AnimationTextures
         private Vector3 TransformNormal(Vector3 normal)
         {
             return _transform ? _transform.TransformDirection(normal) : normal;
+        }
+
+        private string OpenSaveFilePanel(string title, string defaultName, string extension)
+        {
+            string result = EditorUtility.SaveFilePanel(title, 
+                _lastOpenedPath, defaultName, extension);
+            
+            if (!string.IsNullOrEmpty(result) && result.Contains('/'))
+                _lastOpenedPath = result[..result.LastIndexOf('/')];
+
+            if (!Directory.Exists(_lastOpenedPath))
+                _lastOpenedPath = Application.dataPath;
+            
+            return result;
         }
 #endif
     }

@@ -160,11 +160,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _clip: {fileID: 7400000, guid: af3b20ffdbefa9a4293db71bd0275257, type: 2}
   _animator: {fileID: 125919350}
---- !u!23 &125919353 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 2457001960058487693, guid: a0f049d8be01af54dbed86cfe966b813, type: 3}
-  m_PrefabInstance: {fileID: 5544160132575484293}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &125919355 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1201492151490390623, guid: a0f049d8be01af54dbed86cfe966b813, type: 3}
@@ -507,15 +502,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ea806640364028bb3dc892b9397b39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _renderer: {fileID: 125919353}
   _animator: {fileID: 125919350}
-  _transform: {fileID: 125919355}
   _mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   _boundingBox: {fileID: 11400000, guid: 82d5bb514f50c854b9e80dfd51218067, type: 2}
   _animationClips:
   - {fileID: 7400000, guid: af3b20ffdbefa9a4293db71bd0275257, type: 2}
   - {fileID: 7400000, guid: 3068f82a6c917d448a3b71cc37a3eb2c, type: 2}
   _uvChannel: 1
+  _renderer: {fileID: 0}
+  _transform: {fileID: 125919355}
 --- !u!4 &835008336
 Transform:
   m_ObjectHideFlags: 0

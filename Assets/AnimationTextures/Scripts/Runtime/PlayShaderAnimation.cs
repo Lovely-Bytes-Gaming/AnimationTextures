@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace DefaultNamespace
+namespace LovelyBytes.AnimationTextures
 {
     public class PlayShaderAnimation : MonoBehaviour
     {

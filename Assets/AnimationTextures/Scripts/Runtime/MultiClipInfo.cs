@@ -15,6 +15,7 @@ namespace LovelyBytes.AnimationTextures
             public float NormalizedDuration;
         }
 
+        public readonly int TotalFrameCount;
         private readonly Entry[] _entries;
         
         public MultiClipInfo(params AnimationClip[] clips)
@@ -33,13 +34,13 @@ namespace LovelyBytes.AnimationTextures
                 startFrame += entry.FrameCount + 1;
                 entry.FPS = clip.frameRate;
             }
-            int totalFrameCount = _entries.Sum(entry => entry.FrameCount) + _entries.Length - 1;
+            TotalFrameCount = _entries.Sum(entry => entry.FrameCount) + _entries.Length - 1;
 
             for (int i = 0; i < _entries.Length; ++i)
             {
                 ref Entry entry = ref _entries[i];
-                entry.NormalizedStartTime = entry.StartFrame / (float)totalFrameCount;
-                entry.NormalizedDuration = entry.FrameCount / (float)totalFrameCount;
+                entry.NormalizedStartTime = entry.StartFrame / (float)TotalFrameCount;
+                entry.NormalizedDuration = entry.FrameCount / (float)TotalFrameCount;
             }
         }
 
