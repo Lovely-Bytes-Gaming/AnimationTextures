@@ -10,7 +10,7 @@ namespace LovelyBytes.AnimationTextures
         [Min(0)] 
         public int 
             ClipIndexA = 0, 
-            ClipIndexB = 0;
+            ClipIndexB = 1;
         
         [SerializeField] 
         private MultiClipInfoReference _multiClipInfoRef;
@@ -46,10 +46,14 @@ namespace LovelyBytes.AnimationTextures
             
             if (_blend > 1f - Mathf.Epsilon)
                 _time0 = 0f;
+
+            foreach (Material material in _renderer.materials)
+            {
+                material.SetFloat(_clipTimeAProp, Mathf.Lerp(a.NormalizedStartTime, a.NormalizedEndTime, _time0));
+                material.SetFloat(_clipTimeBProp, Mathf.Lerp(b.NormalizedStartTime, b.NormalizedEndTime, _time1));
+                material.SetFloat(_blendProp, _blend);
+            }
             
-            _renderer.material.SetFloat(_clipTimeAProp, Mathf.Lerp(a.NormalizedStartTime, a.NormalizedEndTime, _time0));
-            _renderer.material.SetFloat(_clipTimeBProp, Mathf.Lerp(b.NormalizedStartTime, b.NormalizedEndTime, _time1));
-            _renderer.material.SetFloat(_blendProp, _blend);
         }
     }
 }
