@@ -41,6 +41,9 @@ namespace LovelyBytes.AnimationTextures
         public float FPS;
         public float NormalizedStartTime;
         public float NormalizedDuration;
+        
+        public int EndFrame => StartFrame + FrameCount;
+        public float NormalizedEndTime => NormalizedStartTime + NormalizedDuration;
     }
     
     [Serializable]

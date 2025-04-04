@@ -626,7 +626,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "6d34092dd2b848b998ddde77bb4f5a6e",
     "m_Id": 0,
-    "m_DisplayName": "Frame",
+    "m_DisplayName": "Time",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -1061,10 +1061,10 @@
     "m_Guid": {
         "m_GuidSerialized": "02b553b2-2c43-4836-ae65-14ee572173ec"
     },
-    "m_Name": "Frame",
+    "m_Name": "Time",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Frame",
-    "m_DefaultReferenceName": "_Frame",
+    "m_RefNameGeneratedByDisplayName": "Time",
+    "m_DefaultReferenceName": "_Time",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
