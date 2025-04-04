@@ -248,7 +248,7 @@
         },
         "preventRotation": false
     },
-    "m_Path": "Shader Graphs",
+    "m_Path": "Shader Graphs/AnimationTextures",
     "m_GraphPrecision": 1,
     "m_PreviewMode": 2,
     "m_OutputNode": {
@@ -551,7 +551,7 @@
     "m_Group": {
         "m_Id": ""
     },
-    "m_Name": "AnimationClipBlending",
+    "m_Name": "BlendAnimationClips",
     "m_DrawState": {
         "m_Expanded": true,
         "m_Position": {
