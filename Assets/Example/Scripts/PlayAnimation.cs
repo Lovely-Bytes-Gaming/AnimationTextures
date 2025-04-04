@@ -1,9 +1,8 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace DefaultNamespace
+namespace LovelyBytes.AnimationTextures
 {
     public class PlayAnimation : MonoBehaviour
     {

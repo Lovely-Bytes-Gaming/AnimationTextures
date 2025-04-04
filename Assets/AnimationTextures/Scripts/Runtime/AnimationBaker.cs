@@ -114,12 +114,10 @@ namespace LovelyBytes.AnimationTextures
             }
 
             Mesh mesh = Instantiate(_mesh);
-            
             int vertexCount = mesh.vertexCount;
             
-            int totalFrameCount = _animationClips
-                .Sum(animationClip => Mathf.CeilToInt(animationClip.length * animationClip.frameRate))
-                + (_animationClips.Length - 1);
+            MultiClipInfo multiClipInfo = new (_animationClips);
+            int totalFrameCount = multiClipInfo.TotalFrameCount;
             
             var colors = new Color[vertexCount * totalFrameCount];
             var vertexIds = new Vector2[vertexCount];
@@ -134,28 +132,27 @@ namespace LovelyBytes.AnimationTextures
                     ? TextureWrapMode.Repeat : TextureWrapMode.Clamp
             };
 
-            int insertIdx = 0;
             for (int clipIdx = 0; clipIdx < _animationClips.Length; clipIdx++)
             {
-                AnimationClip animationClip = _animationClips[clipIdx];
-                int frameCount = Mathf.CeilToInt(animationClip.length * animationClip.frameRate);
-
+                ClipInfo clipInfo = multiClipInfo.Entries[clipIdx];
+                AnimationClip animationClip = clipInfo.Clip;
+                
                 GetGraphForAnimationClip(_animator, animationClip, out PlayableGraph graph);
                 graph.Evaluate(0f);
-
                 BakeMesh(mesh);
 
                 float delta = 1f / animationClip.frameRate;
+                int endFrame = clipInfo.StartFrame + clipInfo.FrameCount;
 
-                for (int frameIdx = 0; frameIdx < frameCount; frameIdx++)
+                for (int frameIdx = clipInfo.StartFrame; frameIdx < endFrame; ++frameIdx)
                 {
-                    for (int vertexIdx = 0; vertexIdx < vertexCount; vertexIdx++)
+                    for (int vertexIdx = 0; vertexIdx < vertexCount; ++vertexIdx)
                     {
                         Vector3 v = TransformVertex(mesh.vertices[vertexIdx]);
                         v = _boundingBox.ToRelativePosition(v);
 
                         Color c = new(v.x, v.y, v.z);
-                        colors[insertIdx++] = c;
+                        colors[frameIdx * vertexCount + vertexIdx] = c;
                     }
 
                     graph.Evaluate(delta);
@@ -169,8 +166,8 @@ namespace LovelyBytes.AnimationTextures
                 {
                     for (int i = 0; i < vertexCount; ++i)
                     {
+                        int insertIdx = endFrame * vertexCount + i;
                         colors[insertIdx] = colors[insertIdx - vertexCount];
-                        ++insertIdx;
                     }
                 }
             }
@@ -194,6 +191,20 @@ namespace LovelyBytes.AnimationTextures
             
             string meshPath = OpenSaveFilePanel("Save Mesh",
                 $"{_mesh.name}-VertexIDs", "asset");
+            
+            AssetDatabase.CreateAsset(mesh, GetRelativePath(meshPath));
+
+            if (multiClipInfo.Entries.Length < 1)
+                return;
+
+            var multiClipInfoRef = ScriptableObject.CreateInstance<MultiClipInfoReference>();
+            multiClipInfoRef.name = $"{_mesh.name}-MultiClipInfo";
+            multiClipInfoRef.Value = multiClipInfo;
+            
+            string clipInfoPath = OpenSaveFilePanel("Save Multi Clip Info for Sampling",
+                multiClipInfoRef.name, "asset");
+            
+            AssetDatabase.CreateAsset(multiClipInfoRef, clipInfoPath);
         }
         
         private void UpdateCorners(ref Vector3 min, ref Vector3 max, Vector3[] verts)
@@ -247,6 +258,9 @@ namespace LovelyBytes.AnimationTextures
         {
             string result = EditorUtility.SaveFilePanel(title, 
                 _lastOpenedPath, defaultName, extension);
+
+            result = result[result.IndexOf("Assets", StringComparison.Ordinal)..];
+            result = result[result.IndexOf("Assets", StringComparison.Ordinal)..];
             
             if (!string.IsNullOrEmpty(result) && result.Contains('/'))
                 _lastOpenedPath = result[..result.LastIndexOf('/')];
