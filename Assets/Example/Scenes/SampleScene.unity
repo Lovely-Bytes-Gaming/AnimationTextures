@@ -588,8 +588,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed35f07f30b348aa92880efe020467db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _boundingBox: {fileID: 0}
-  _boundingBoxColor: {r: 0.35384893, g: 1, b: 0, a: 0.2}
+  _boundingBox: {fileID: 11400000, guid: 82d5bb514f50c854b9e80dfd51218067, type: 2}
+  _boundingBoxColor: {r: 0.35384893, g: 1, b: 0, a: 0.105882354}
 --- !u!114 &1570720732
 MonoBehaviour:
   m_ObjectHideFlags: 0
