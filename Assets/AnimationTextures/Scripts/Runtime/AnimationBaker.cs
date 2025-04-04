@@ -125,14 +125,14 @@ namespace LovelyBytes.AnimationTextures
             
             var texture = new Texture2D(vertexCount, totalFrameCount, TextureFormat.ARGB32, mipChain: false, linear: true)
             {
-                // if we bake only a single clip that is looping, we can get the looping behaviour via sampling the texture
-                // in repeat mode. Otherwise, we set the wrap mode to clamp, so that the last frame of the last clip doesn't
-                // impact the first frame of the first clip.
+                // if we bake only a single clip, we set the wrap mode to Repeat to get automatic looping behaviour.
+                // Otherwise, we set the wrap mode to Clamp, so that the last frame of the last clip doesn't
+                // impact the first frame of the first clip and vice versa.
                 wrapMode = _animationClips.Length == 1 && _animationClips[0].wrapMode == WrapMode.Loop 
                     ? TextureWrapMode.Repeat : TextureWrapMode.Clamp
             };
 
-            for (int clipIdx = 0; clipIdx < _animationClips.Length; clipIdx++)
+            for (int clipIdx = 0; clipIdx < _animationClips.Length; ++clipIdx)
             {
                 ClipInfo clipInfo = multiClipInfo.Entries[clipIdx];
                 AnimationClip animationClip = clipInfo.Clip;
@@ -159,17 +159,6 @@ namespace LovelyBytes.AnimationTextures
                     BakeMesh(mesh);
                 }
                 graph.Destroy();
-
-                // if this is not the last clip, we add the last frame of the current animation again,
-                // to avoid interpolation errors at the borders between clips
-                if (clipIdx < _animationClips.Length - 1)
-                {
-                    for (int i = 0; i < vertexCount; ++i)
-                    {
-                        int insertIdx = endFrame * vertexCount + i;
-                        colors[insertIdx] = colors[insertIdx - vertexCount];
-                    }
-                }
             }
 
             texture.SetPixels(colors);
