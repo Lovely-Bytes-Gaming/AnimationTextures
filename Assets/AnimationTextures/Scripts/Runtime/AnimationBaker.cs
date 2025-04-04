@@ -258,9 +258,11 @@ namespace LovelyBytes.AnimationTextures
         {
             string result = EditorUtility.SaveFilePanel(title, 
                 _lastOpenedPath, defaultName, extension);
-
-            result = result[result.IndexOf("Assets", StringComparison.Ordinal)..];
-            result = result[result.IndexOf("Assets", StringComparison.Ordinal)..];
+            
+            int assetsIdx = result.IndexOf("Assets", StringComparison.Ordinal);
+            
+            if (assetsIdx > -1)            
+                result = result[assetsIdx..];
             
             if (!string.IsNullOrEmpty(result) && result.Contains('/'))
                 _lastOpenedPath = result[..result.LastIndexOf('/')];
