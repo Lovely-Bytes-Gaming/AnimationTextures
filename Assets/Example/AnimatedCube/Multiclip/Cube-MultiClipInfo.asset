@@ -19,10 +19,10 @@ MonoBehaviour:
       FrameCount: 60
       FPS: 60
       NormalizedStartTime: 0
-      NormalizedDuration: 0.45801526
+      NormalizedDuration: 0.4580153
     - Clip: {fileID: 7400000, guid: 3068f82a6c917d448a3b71cc37a3eb2c, type: 2}
       StartFrame: 61
       FrameCount: 70
       FPS: 60
-      NormalizedStartTime: 0.46564886
-      NormalizedDuration: 0.53435117
+      NormalizedStartTime: 0.4656489
+      NormalizedDuration: 0.5343512

@@ -102,13 +102,19 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Blend: 0
+    - _Blend: 1
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Clip1Start: 0.5
+    - _ClipEndA: 0.4580153
+    - _ClipEndB: 1.0000001
     - _ClipIndex: 1
+    - _ClipStartA: 0
+    - _ClipStartB: 0.4656489
+    - _ClipTimeA: 0
+    - _ClipTimeB: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -136,6 +142,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ClipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MaxBounds: {r: 0.655682, g: 1.6743894, b: 1.9279175, a: 0}
