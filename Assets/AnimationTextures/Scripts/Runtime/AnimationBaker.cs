@@ -48,6 +48,9 @@ namespace LovelyBytes.AnimationTextures
         [SerializeField, Tooltip("Optional. Will be used to transform the mesh during baking")] 
         private Transform _transform;
 
+        [SerializeField]
+        private TextureFormat _textureFormat = TextureFormat.RGBA32;
+        
         private string _lastOpenedPath = Application.dataPath;
         
         [ContextMenu(nameof(Bake))]
@@ -123,7 +126,7 @@ namespace LovelyBytes.AnimationTextures
             var vertexIds = new Vector2[vertexCount];
             var normals = new Vector3[vertexCount];
             
-            var texture = new Texture2D(vertexCount, totalFrameCount, TextureFormat.ARGB32, mipChain: false, linear: true)
+            var texture = new Texture2D(vertexCount, totalFrameCount, _textureFormat, mipChain: false, linear: true)
             {
                 // if we bake only a single clip, we set the wrap mode to Repeat to get automatic looping behaviour.
                 // Otherwise, we set the wrap mode to Clamp, so that the last frame of the last clip doesn't
