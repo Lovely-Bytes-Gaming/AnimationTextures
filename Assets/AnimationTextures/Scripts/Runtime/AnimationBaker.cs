@@ -106,7 +106,7 @@ namespace LovelyBytes.AnimationTextures
             _boundingBox = AssetDatabase.LoadAssetAtPath<BoundingBox>(path);
             Debug.Log("Successfully created bounding box");
         }
-
+        
         [ContextMenu(nameof(BakeTextureAndMesh))]
         public void BakeTextureAndMesh()
         {
@@ -116,24 +116,43 @@ namespace LovelyBytes.AnimationTextures
                 return;
             }
 
+            const int _maxTextureWidth = 1024;
+            
             Mesh mesh = Instantiate(_mesh);
             int vertexCount = mesh.vertexCount;
             
+            int textureCount = (vertexCount-1) / _maxTextureWidth + 1;
+            int totalWidth = _maxTextureWidth * textureCount;
+
             MultiClipInfo multiClipInfo = new (_animationClips);
             int totalFrameCount = multiClipInfo.TotalFrameCount;
             
-            var colors = new Color[vertexCount * totalFrameCount];
+            var textures = new Texture2D[textureCount];
+
+            for (int i = 0; i < textureCount; ++i)
+            {
+                textures[i] = new Texture2D(_maxTextureWidth, totalFrameCount, _textureFormat, mipChain: false,
+                    linear: true)
+                {
+                    // if we bake only a single clip, we set the wrap mode to Repeat to get automatic looping behaviour.
+                    // Otherwise, we set the wrap mode to Clamp, so that the last frame of the last clip doesn't
+                    // impact the first frame of the first clip and vice versa.
+                    wrapMode = _animationClips.Length == 1 && _animationClips[0].wrapMode == WrapMode.Loop
+                        ? TextureWrapMode.Repeat
+                        : TextureWrapMode.Clamp
+                };
+            }
+            
+            var colorArrays = new Color[textureCount][];
+
+            for (int i = 0; i < textureCount; ++i)
+            {
+                Texture2D texture = textures[i];
+                colorArrays[i] = new Color[texture.width * texture.height];
+            }
+            
             var vertexIds = new Vector2[vertexCount];
             var normals = new Vector3[vertexCount];
-            
-            var texture = new Texture2D(vertexCount, totalFrameCount, _textureFormat, mipChain: false, linear: true)
-            {
-                // if we bake only a single clip, we set the wrap mode to Repeat to get automatic looping behaviour.
-                // Otherwise, we set the wrap mode to Clamp, so that the last frame of the last clip doesn't
-                // impact the first frame of the first clip and vice versa.
-                wrapMode = _animationClips.Length == 1 && _animationClips[0].wrapMode == WrapMode.Loop 
-                    ? TextureWrapMode.Repeat : TextureWrapMode.Clamp
-            };
 
             for (int clipIdx = 0; clipIdx < _animationClips.Length; ++clipIdx)
             {
@@ -149,37 +168,72 @@ namespace LovelyBytes.AnimationTextures
 
                 for (int frameIdx = clipInfo.StartFrame; frameIdx < endFrame; ++frameIdx)
                 {
-                    for (int vertexIdx = 0; vertexIdx < vertexCount; ++vertexIdx)
+                    for (int vertexIdx = 0; vertexIdx < totalWidth; ++vertexIdx)
                     {
-                        Vector3 v = TransformVertex(mesh.vertices[vertexIdx]);
-                        v = _boundingBox.ToRelativePosition(v);
+                        bool inBounds = vertexIdx < vertexCount;
+                        
+                        Vector3 v = inBounds
+                            ? mesh.vertices[vertexIdx] : Vector3.zero;
+
+                        if (inBounds)
+                        {
+                            v = TransformVertex(v);
+                            v = _boundingBox.ToRelativePosition(v);
+                        }
 
                         Color c = new(v.x, v.y, v.z);
-                        colors[frameIdx * vertexCount + vertexIdx] = c;
+                        
+                        int textureIndex = vertexIdx / _maxTextureWidth;
+                        Color[] colors = colorArrays[textureIndex];
+                        
+                        colors[frameIdx * _maxTextureWidth + (vertexIdx - textureIndex * _maxTextureWidth)] = c;
                     }
-
                     graph.Evaluate(delta);
                     BakeMesh(mesh);
                 }
                 graph.Destroy();
             }
 
-            texture.SetPixels(colors);
-            texture.Apply(updateMipmaps: false, makeNoLongerReadable: true);
+            for (int i = 0; i < textureCount; ++i)
+            {
+                textures[i].SetPixels(colorArrays[i]);
+                //textures[i].Apply(updateMipmaps: false, makeNoLongerReadable: true);
+            }
 
             for (int i = 0; i < vertexCount; i++)
             {
-                vertexIds[i] = new Vector2((i + 0.5f) / vertexCount, 1f);
+                vertexIds[i] = new Vector2((i + 0.5f) / _maxTextureWidth, 0f);
                 normals[i] = TransformNormal(mesh.normals[i]);
             }
             
             mesh.SetUVs(_uvChannel, vertexIds);
             mesh.SetNormals(normals);
 
-            string texturePath = OpenSaveFilePanel("Save Animation Texture",
-                $"{_mesh.name}-AnimationTexture", "asset");
+            string textureType = textureCount > 1 ? "AnimationTextureArray" : "AnimationTexture";
+            UnityEngine.Object textureAsset;
+
+            if (textureCount > 1)
+            {
+                Texture2DArray textureArray = new(textures[0].width, textures[0].height, textures.Length,
+                    textures[0].format, mipChain: false, linear: true, createUninitialized: true);
+
+                for (int i = 0; i < textureCount; ++i)
+                {
+                    textureArray.SetPixels(textures[i].GetPixels(), i);
+                }
+                textureArray.Apply(updateMipmaps: false, makeNoLongerReadable: true);
+                textureAsset = textureArray;
+            }
+            else
+            {
+                textures[0].Apply(updateMipmaps: false, makeNoLongerReadable: true);
+                textureAsset = textures[0];
+            }
             
-            AssetDatabase.CreateAsset(texture, GetRelativePath(texturePath));
+            string texturePath = OpenSaveFilePanel("Save Animation Texture",
+                $"{_mesh.name}-{textureType}", "asset");
+            
+            AssetDatabase.CreateAsset(textureAsset, GetRelativePath(texturePath));
             
             string meshPath = OpenSaveFilePanel("Save Mesh",
                 $"{_mesh.name}-VertexIDs", "asset");
