@@ -6,11 +6,9 @@
  */
 
 using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
-using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using System.IO;
